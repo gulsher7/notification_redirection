@@ -36,9 +36,9 @@ steps:
     apkFiles: '**/*.apk'
     jarsign: true
     jarsignerKeystoreFile: 'android.keystore'
-    jarsignerKeystorePassword: '$(jarsignerKeystorePassword)'
+    jarsignerKeystorePassword: '12345678'
     jarsignerKeystoreAlias: 'react-native-pipeline-key'
-    jarsignerKeyPassword: '$(jarsignerKeyPassword)'
+    jarsignerKeyPassword: '12345678'
     zipalign: true
 
 - script: mv src/android/app/build/outputs/apk/release/app-release-unsigned.apk ReactNativePipeline$(Build.BuildNumber).apk
@@ -50,18 +50,3 @@ steps:
     artifactName: drop
     publishLocation: 'container'
 
-- task: AppCenterDistribute@3
-  displayName: "Create a release on App Center"
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  inputs:
-    serverEndpoint: 'app-center'
-    appSlug: 'stafford.williams/ReactNativePipeline-Android'
-    appFile: 'ReactNativePipeline$(Build.BuildNumber).apk'
-    releaseNotesOption: 'input'
-    releaseNotesInput: |
-      $(Build.SourceVersionMessage)
-      
-      latest source: '$(Build.SourceVersion)'
-      
-      An automated release from Azure DevOps
-    destinationType: 'groups'
